@@ -1,9 +1,13 @@
 import express, { Request, Response } from "express";
 import dotenv from "dotenv";
+import { userRouter } from "./users";
 
 // configures dotenv to work in your application
 dotenv.config();
 const app = express();
+
+// router should be /users
+app.use('/', userRouter);
 
 const PORT = process.env.PORT;
 
