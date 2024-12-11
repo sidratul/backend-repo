@@ -1,5 +1,6 @@
 import * as firebase from "../firebase/firebase.config";
 import type { User, UserList } from "./user";
+import { UserUpdateData } from "./user.validation";
 
 const getUserCollection = () =>  {
   const db = firebase.getFirestoreDb();
@@ -10,7 +11,10 @@ export const findAll = async (): Promise<UserList> => {
   const snapshot = await getUserCollection().get();
   const users: User[] = [];
   snapshot.forEach((doc) => {
-    users.push(doc.data() as User);
+    users.push({
+      ...doc.data() as User,
+      id: doc.id,
+    });
   });
 
   return {
@@ -19,7 +23,7 @@ export const findAll = async (): Promise<UserList> => {
   };
 }
 
-export const updateUser = async (id: string, user: User){
+export const updateUser = async (id: string, user: Omit<UserUpdateData, 'id'>) => {
   const userRef = getUserCollection().doc(id);
-  return userRef.update(user as Record<string, any>);
+  return userRef.update(user);
 }

@@ -5,11 +5,13 @@ import { userRouter } from "./users";
 // configures dotenv to work in your application
 dotenv.config();
 const app = express();
+const PORT = process.env.PORT;
 
 // router should be /users
-app.use('/', userRouter);
+app.use(express.json());
+app.use(express.urlencoded({ extended: true}));
 
-const PORT = process.env.PORT;
+app.use('/', userRouter);
 
 app.get("/", (request: Request, response: Response) => { 
   response.status(200).send("Hello World");
