@@ -14,10 +14,17 @@ const init = () => {
   return db;
 }
 
-export function getFirestoreDb() {
+export function getDb() {
   if (db) {
     return db;
   }
 
   return init();
 }
+
+export function getDataWithId<T = unknown>(data: FirebaseFirestore.DocumentSnapshot<FirebaseFirestore.DocumentData, FirebaseFirestore.DocumentData>) {
+  return {
+    ...data.data(),
+    id: data.id,
+  } as T
+} 
