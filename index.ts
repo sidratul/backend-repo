@@ -1,17 +1,20 @@
 import express, { Request, Response } from "express";
 import dotenv from "dotenv";
 import { userRouter } from "./users";
+import { errorHandler } from "./middlewares/error.middleware";
 
 // configures dotenv to work in your application
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT;
 
-// router should be /users
 app.use(express.json());
 app.use(express.urlencoded({ extended: true}));
+app.use(errorHandler);
 
+// router should be /users
 app.use('/', userRouter);
+
 
 app.get("/", (request: Request, response: Response) => { 
   response.status(200).send("Hello World");

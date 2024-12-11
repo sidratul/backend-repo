@@ -8,6 +8,5 @@ export const findAll = (): Promise<UserList> => {
 
 export const updateUser = (userUpdateData: UserUpdateData) => {
   const { id, ...user} =  userUpdateData;
-
   return userRepo.updateUser(id, user);
 }

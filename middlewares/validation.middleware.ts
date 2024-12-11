@@ -1,6 +1,4 @@
-import { error } from "console";
 import { NextFunction, Request, Response } from "express";
-import { STATUS_CODES } from "http";
 import { z } from "zod";
 
 export function validate(schema: z.ZodTypeAny ){
