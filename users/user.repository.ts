@@ -14,7 +14,7 @@ export const findAll = async (): Promise<UserList> => {
   const snapshot = await getUserCollection().get();
   const users: User[] = [];
   snapshot.forEach((userDoc) => {
-    users.push(getDisplayedUserData(userDoc));
+    users.push(userDoc.data() as  User);
   });
 
   return {
@@ -23,32 +23,20 @@ export const findAll = async (): Promise<UserList> => {
   };
 }
 
-export const getUser = async (id: string): Promise<User | undefined> => {
+export const findById = async (id: string): Promise<User | undefined> => {
   const userDoc = await getUserCollection().doc(id).get();
-  if(userDoc.data()) {
-    return undefined;
-  }
+  return userDoc.data() as User;
+}
 
-  return getDisplayedUserData(userDoc);
+export const createUser = async (user: User): Promise<User> => {
+  await getUserCollection().doc(user.id).create(user);
+  return user;
 }
 
 export const updateUser = async (id: string, userData: Omit<UserUpdateData, 'id'>) => {
   const userRef = getUserCollection().doc(id);
-  // const userDoc = await userRef.get();
-  // console.log("userRef", user);
 
   await userRef.update(userData);
-
-  // const userDoc = await userRef.get();
-  // return getDisplayedUserData(userDoc);
-}
-
-const getDisplayedUserData = (userDoc: FirestoreDoc): User =>  {
-  const userData = userDoc.data()!;
-  return {
-    id: userDoc.id,
-    name: userData.name,
-    address: userData.address,
-    phoneNumber: userData.phoneNumber,
-  }
+  const userDoc = await userRef.get();
+  return userDoc.data();
 }

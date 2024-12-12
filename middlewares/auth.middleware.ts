@@ -12,10 +12,13 @@ export async function authGuard(req: Request, res: Response, next: NextFunction)
 
     return;
   }
-
   try {
     const appCheckClaims = await auth.verifyIdToken(appCheckToken)
-    console.log(appCheckClaims.token);
+    res.locals.user = {
+      id: appCheckClaims.user_id,
+      email: appCheckClaims.email,
+    };
+
     next();
   } catch (err) {
     console.log(err);
