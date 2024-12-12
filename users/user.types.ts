@@ -1,8 +1,9 @@
 import { ListResponse } from "../general/general.types";
 
 export interface User {
-  id?: string;
+  id: string;
   name: string;
+  password?: string;
   address: string;
   phoneNumber: string;
 }

@@ -1,19 +1,20 @@
-import * as firestore from "../firestore/firestore.config";
-import type { User, UserList } from "./user";
+import * as firebase from "../firebase/firebase.config";
+import { FirestoreDoc } from "../firebase/firebase.types";
+import type { User, UserList } from "./user.types";
 import { UserUpdateData } from "./user.validation";
 
 const USER_COLLECTION = 'users';
 
 const getUserCollection = () =>  {
-  const db = firestore.getDb();
+  const db = firebase.db;
   return db.collection(USER_COLLECTION);
 }
 
 export const findAll = async (): Promise<UserList> => {
   const snapshot = await getUserCollection().get();
   const users: User[] = [];
-  snapshot.forEach((doc) => {
-    users.push(firestore.getDataWithId<User>(doc));
+  snapshot.forEach((userDoc) => {
+    users.push(getDisplayedUserData(userDoc));
   });
 
   return {
@@ -22,10 +23,32 @@ export const findAll = async (): Promise<UserList> => {
   };
 }
 
-export const updateUser = async (id: string, userData: Omit<UserUpdateData, 'id'>): Promise<User> => {
+export const getUser = async (id: string): Promise<User | undefined> => {
+  const userDoc = await getUserCollection().doc(id).get();
+  if(userDoc.data()) {
+    return undefined;
+  }
+
+  return getDisplayedUserData(userDoc);
+}
+
+export const updateUser = async (id: string, userData: Omit<UserUpdateData, 'id'>) => {
   const userRef = getUserCollection().doc(id);
+  // const userDoc = await userRef.get();
+  // console.log("userRef", user);
+
   await userRef.update(userData);
 
-  const doc = await userRef.get();
-  return firestore.getDataWithId<User>(doc);
+  // const userDoc = await userRef.get();
+  // return getDisplayedUserData(userDoc);
+}
+
+const getDisplayedUserData = (userDoc: FirestoreDoc): User =>  {
+  const userData = userDoc.data()!;
+  return {
+    id: userDoc.id,
+    name: userData.name,
+    address: userData.address,
+    phoneNumber: userData.phoneNumber,
+  }
 }
