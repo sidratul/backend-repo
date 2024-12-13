@@ -11,8 +11,9 @@ userRouter.get('/fetch-user-data', async (req, res) => {
   res.json(user);
 });
 
-userRouter.post('/update-user-data', validate(userUpdateValidation), async (req, res) => {
+userRouter.patch('/update-user-data', validate(userUpdateValidation), async (req, res) => {
   const data = req.body as UserUpdateData;
-  const user = await userService.updateUser(data);
+  const authUser = res.locals.user;
+  const user = await userService.updateUser(authUser.id,  data);
   res.json(user)
 });

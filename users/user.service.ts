@@ -32,7 +32,6 @@ export const createUser = (user: User): Promise<User> => {
   return userRepo.createUser(user);
 }
 
-export const updateUser = (userUpdateData: UserUpdateData) => {
-  const { id, ...user} =  userUpdateData;
-  return userRepo.updateUser(id, user);
+export const updateUser = (id: string, userUpdateData: UserUpdateData) => {
+  return userRepo.updateUser(id, userUpdateData);
 }

@@ -35,8 +35,10 @@ export const createUser = async (user: User): Promise<User> => {
 
 export const updateUser = async (id: string, userData: Omit<UserUpdateData, 'id'>) => {
   const userRef = getUserCollection().doc(id);
-
-  await userRef.update(userData);
+  const res = await userRef.update({
+    id,
+    ...userData
+  });
   const userDoc = await userRef.get();
   return userDoc.data();
 }

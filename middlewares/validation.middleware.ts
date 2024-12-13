@@ -3,13 +3,19 @@ import { z } from "zod";
 
 export function validate(schema: z.ZodTypeAny ){
   return async function(req: Request, res: Response, next: NextFunction) {
-    const result = await schema.safeParse(req.body);
-    if (!result.error) {
-      return next();
+    const {success, error} = await schema.safeParse(req.body);
+    if (success) {
+      next();
+      return;
     }
 
+    const issue = error.issues[0];
     res.statusCode = 400;
-    // TODO: format messages so its easier to handle
-    res.json(result.error.format());
+    
+    // TODO: format error messages so its easier to handle
+    // https://zod.dev/ERROR_HANDLING
+    res.json({
+      message: `${issue.path[0]} ${issue.message}`,
+    });
   }
 }
