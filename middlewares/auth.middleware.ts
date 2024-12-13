@@ -5,7 +5,7 @@ export async function authGuard(req: Request, res: Response, next: NextFunction)
   const appCheckToken = req.header("X-Firebase-AppCheck");
 
   if (!appCheckToken) {
-    res.status(401);
+    res.statusCode = 401;
     res.json({
       message: 'Unauthorized'
     });
@@ -21,8 +21,7 @@ export async function authGuard(req: Request, res: Response, next: NextFunction)
 
     next();
   } catch (err) {
-    console.log(err);
-    res.status(401);
+    res.statusCode = 401;
     res.json({
       message: 'Unauthorized'
     });
