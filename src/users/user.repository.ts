@@ -1,5 +1,4 @@
 import * as firebase from "../firebase/firebase.config";
-import { FirestoreDoc } from "../firebase/firebase.types";
 import type { User, UserList } from "./user.types";
 import { UserUpdateData } from "./user.validation";
 
@@ -35,7 +34,7 @@ export const createUser = async (user: User): Promise<User> => {
 
 export const updateUser = async (id: string, userData: Omit<UserUpdateData, 'id'>) => {
   const userRef = getUserCollection().doc(id);
-  const res = await userRef.update({
+  await userRef.update({
     id,
     ...userData
   });

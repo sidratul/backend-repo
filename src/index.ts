@@ -4,6 +4,7 @@ import { userRouter } from "./users";
 import { errorHandler } from "./middlewares/error.middleware";
 import { authGuard } from "./middlewares/auth.middleware";
 import cors from 'cors';
+import { onRequest } from "firebase-functions/v2/https";
 
 // configures dotenv to work in your application
 dotenv.config();
@@ -19,14 +20,15 @@ app.use(errorHandler);
 // router should be /users
 app.use('/', userRouter);
 
-
 app.get("/", (request: Request, response: Response) => { 
   response.status(200).send("Hello World");
 }); 
 
-app.listen(PORT, () => { 
-  console.log("Server running at PORT: ", PORT); 
-}).on("error", (error) => {
-  // gracefully handle error
-  throw new Error(error.message);
-});
+// app.listen(PORT, () => { 
+//   console.log("Server running at PORT: ", PORT); 
+// }).on("error", (error) => {
+//   // gracefully handle error
+//   throw new Error(error.message);
+// });
+
+exports.api = onRequest(app); 
