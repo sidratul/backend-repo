@@ -9,7 +9,7 @@ import { onRequest } from "firebase-functions/v2/https";
 // configures dotenv to work in your application
 dotenv.config();
 const app = express();
-const PORT = process.env.PORT;
+const PORT = process.env.NODE_PORT;
 
 app.use(express.json());
 app.use(cors());
@@ -24,11 +24,13 @@ app.get("/", (request: Request, response: Response) => {
   response.status(200).send("Hello World");
 }); 
 
-// app.listen(PORT, () => { 
-//   console.log("Server running at PORT: ", PORT); 
-// }).on("error", (error) => {
-//   // gracefully handle error
-//   throw new Error(error.message);
-// });
-
-exports.api = onRequest(app); 
+if (process.env.GCLOUD_PROJECT) { 
+  exports.api = onRequest(app); 
+} else {
+  app.listen(PORT, () => { 
+    console.log("Server running at PORT: ", PORT); 
+  }).on("error", (error) => {
+    // gracefully handle error
+    throw new Error(error.message);
+  });
+}
